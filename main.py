@@ -1,9 +1,8 @@
 import cv2
-import os
 import numpy as np
 import face_recognition
+import pickle
 import dlib
-
 
 
 #================================ ** FACE RECOGNTION ** =======================================
@@ -18,19 +17,22 @@ FONT_THICKNESS = 2
 FRAME_THICKNESS = 2
 
 #=================================== READ KNOWN FACES =========================================
-print('Loading known faces..')
+print('Loading encodings and names of known faces...')
 
 known_faces = [] # stores the encoded data for the known faces
 known_names = [] # stores the name string for the known faces
 
-for name in os.listdir(KNOWN_FACES_DIR):
-    for filename in os.listdir(f'{KNOWN_FACES_DIR}/{name}'):
-        image = face_recognition.load_image_file(f'{KNOWN_FACES_DIR}/{name}/{filename}')
-        encoding = face_recognition.face_encodings(image)[0]
-        known_faces.append(encoding)
-        known_names.append(name)
-        
-print('Known faces loaded successfully...')
+filename = 'faceEncodings'
+infile = open(f'{KNOWN_FACES_DIR}/{filename}','rb')
+known_faces = pickle.load(infile)
+infile.close()
+
+filename = 'faceNames'
+infile = open(f'{KNOWN_FACES_DIR}/{filename}','rb')
+known_names = pickle.load(infile)
+infile.close()
+       
+print('Encodings and names loaded successfully...')
 
 
 #==================================== ** YOLO ** ==============================================
